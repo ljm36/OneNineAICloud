@@ -7,7 +7,8 @@ Copyright (c) 2019 - present AppSeed.us
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from .forms import LoginForm, SignUpForm
-
+import os
+import pathlib
 
 def login_view(request):
     form = LoginForm(request.POST or None)
@@ -21,6 +22,14 @@ def login_view(request):
             password = form.cleaned_data.get("password")
             user = authenticate(username=username, password=password)
             if user is not None:
+                file = pathlib.Path (username)
+                if not file.exists ():
+                    script_path = os.path.realpath(__file__)
+                    new_abs_path = os.path.join(script_path, 'fol_near_script')
+                    if not os.path.exists(new_abs_path):
+                        os.mkdir(username)
+
+
                 login(request, user)
                 return redirect("/")
             else:
